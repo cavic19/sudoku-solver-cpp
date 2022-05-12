@@ -61,7 +61,8 @@ class SudokuDragonFetcher(SudokuFetcher):
         table = content.find(lambda tag: tag.name=='table' and tag.has_attr('id') and tag['id']==table_tag)
         rows = table.findAll(lambda tag: tag.name=='tr')
         for row in rows[1:]:
-            yield (int(cell.string) if cell.string != "\xa0" else "X" for cell in row.findAll(lambda tag: tag.name=='td')[1:])
+            # -1 to comply with SudokuSolver input format 0,.., n-1 
+            yield (int(cell.string) - 1 if cell.string != "\xa0" else "X" for cell in row.findAll(lambda tag: tag.name=='td')[1:])
 
 class SudokuPuzzleOnline(SudokuFetcher):
     def __init__(self, difficulty: int) -> None:
@@ -104,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', type=str, help="Cesta ulozeni  sudoku.")
 
     args = parser.parse_args()
-    fetcher = SudokuPuzzleOnline(args.d)
+    fetcher = SudokuDragonFetcher(args.d)
 
     with open(args.o,"w") as f:
         for formatted_puzzle in fetcher.fetch(args.n):
