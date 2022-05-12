@@ -28,3 +28,6 @@ Lze paralelizovar checkovani sloupcu a radku
 
 ## Simulated Annealing
 Lze paralelizvoat subboxy
+
+# TODO
+ - Pridat namespace Sudoku a prejmenovat SudokuParser -> Parser, atd.
