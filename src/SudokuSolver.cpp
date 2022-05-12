@@ -21,25 +21,25 @@ struct CellStack
     }
 };
 
-bool solveInner(short* puzzle, short* rows, short* cols, short* boxes, const Cell* emptyCells, int index);
+bool solveInner(int* puzzle, short* rows, short* cols, short* boxes, const Cell* emptyCells, int index);
 
-void solve(const short* puzzle, short* solution)
+void solve(const int* puzzle, int* solution)
 {
 
     // ANALYZE
-    short rows[9] = {0};
-    short cols[9] = {0};
-    short boxes[9] = {0};
-    Cell emptyCells[9*9 - 17] = {}; // maximalni pocet neznamych bunek
+    short rows[16] = {0};
+    short cols[16] = {0};
+    short boxes[16] = {0};
+    Cell emptyCells[16*16 - 55] = {}; // 55 as the smalles number of clues for 16x16 sudoku
     int emptyCellsCount = 0;
 
-    for (int row = 0; row < 9; row++)
-        for (int col = 0; col < 9; col++)
+    for (int row = 0; row < 16; row++)
+        for (int col = 0; col < 16; col++)
         {
-            int box = (row / 3) * 3 + col / 3;
-            if (puzzle[row*9 + col] !=0)
+            int box = (row / 4) * 4 + col / 4;
+            if (puzzle[row*16 + col] != -1)
             {
-                short value = 1 << puzzle[row*9 + col] - 1;
+                short value = 1 << puzzle[row*16 + col];
                 rows[row] ^= value;
                 cols[col] ^= value;
                 boxes[box] ^= value;
@@ -49,7 +49,7 @@ void solve(const short* puzzle, short* solution)
                 emptyCells[emptyCellsCount++] = {row, col, box};
             }
         }
-    memcpy(solution, puzzle, sizeof(short)*81);
+    memcpy(solution, puzzle, sizeof(int)*256);
     // END ANALYZE
 
     solveInner(solution, rows, cols, boxes, emptyCells, emptyCellsCount-1);
@@ -60,7 +60,7 @@ inline short getNextCandidate(short candidates)
     return ~candidates & -~candidates;
 }
 
-bool solveInner(short* puzzle, short* rows, short* cols, short* boxes, const Cell* emptyCells, int index)
+bool solveInner(int* puzzle, short* rows, short* cols, short* boxes, const Cell* emptyCells, int index)
 {
     if (index < 0) return true;
 
@@ -71,7 +71,7 @@ bool solveInner(short* puzzle, short* rows, short* cols, short* boxes, const Cel
     short nextCandidate = 0;
 
     
-    while(candidates != (short)511)
+    while(candidates != (short)65535)
     {
         nextCandidate = getNextCandidate(candidates);   
         candidates ^= nextCandidate;
@@ -81,7 +81,7 @@ bool solveInner(short* puzzle, short* rows, short* cols, short* boxes, const Cel
 
         if (solveInner(puzzle, rows, cols, boxes, emptyCells, index - 1))
         {   
-            puzzle[rowInd * 9 + colInd] = (short) __builtin_ffs(nextCandidate);
+            puzzle[rowInd * 16 + colInd] = __builtin_ffs(nextCandidate) - 1;
             return true;
         }
         rows[rowInd] ^= nextCandidate;

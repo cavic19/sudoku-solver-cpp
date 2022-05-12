@@ -1,2 +1,3 @@
 #pragma once
-void solve(const short* puzzle, short* solution);
+void solve(const int* puzzle, int* solution);
+
