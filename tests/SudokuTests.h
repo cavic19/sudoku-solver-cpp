@@ -9,6 +9,7 @@ namespace Sudoku{
         int Fails = 0;
         int* times;
         bool* isSuccess;
+        int* numberOfSolutions;
         std::string* statusMessages;
         TestResult(int testCount);
         ~TestResult();

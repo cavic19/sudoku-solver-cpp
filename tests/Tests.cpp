@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     }
 
 
-    Solver<4> solver;
+    Solver<4> solver(true);
     Tests<4> tests(puzzles, sollutions, puzzleCount, &solver);
     TestResult t = tests.Run();
     cout << "Tests: " << t.TestCount << endl;
@@ -41,11 +41,8 @@ int main(int argc, char **argv)
     cout << "Times: " << endl;
     for (int i = 0; i < t.TestCount; i++)
     {
-        cout << i << ": " << t.times[i] << "[ns]" << "\t" << (t.isSuccess[i] ? "OK" : "FAIL") << endl;
-        if(!t.isSuccess[i])
-        {
-            cout << t.statusMessages[i] << endl;
-        }
+        if (t.numberOfSolutions[i] == 1)
+            cout << i + 1 << ": " << t.times[i] << "[ns]" << "\t" << (t.isSuccess[i] ? "OK" : "FAIL") << ", n=" << t.numberOfSolutions[i] << endl;
     }
     cout << "Average: " << t.GetAvgTimeInNs() << "[ns]" << endl;
     

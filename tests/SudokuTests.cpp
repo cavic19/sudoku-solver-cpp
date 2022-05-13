@@ -16,6 +16,7 @@ Sudoku::TestResult::TestResult(int testCount) : TestCount(testCount)
     isSuccess = new bool[testCount];
     times = new int[testCount];
     statusMessages = new std::string[testCount];
+    numberOfSolutions = new int[testCount];
 }
 
 Sudoku::TestResult::~TestResult()
@@ -23,6 +24,7 @@ Sudoku::TestResult::~TestResult()
     delete[] isSuccess;
     delete[] times;
     delete[] statusMessages;
+    delete[] numberOfSolutions;
 }
 
 template<int BASE>
@@ -66,10 +68,9 @@ Sudoku::TestResult Sudoku::Tests<BASE>::Run()
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         result->times[i] = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
         std::string errorMessage = "";
-        bool success = AssertPuzzles(actualSolution, sollutions[i], &errorMessage);
-        result->statusMessages[i] = errorMessage;      
-        result->isSuccess[i] = success;  
-        result->Fails += !success;      
+        // bool success = AssertPuzzles(actualSolution, sollutions[i], &errorMessage);    
+        result->isSuccess[i] = solver->WasSolutionFound();  
+        result->numberOfSolutions[i] = solver->GetLastFoundSolutions();      
     }
     return *result;
 }    
