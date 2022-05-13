@@ -1,14 +1,17 @@
-Test.exe: Tests.o SudokuTests.o SudokuSolver.o
-	g++ Tests.o SudokuTests.o SudokuSolver.o -o Test.exe
+.\build\Test.exe: .\build\Tests.o .\build\SudokuTests.o .\build\Solver.o .\build\Parser.o
+	g++ .\build\Tests.o .\build\SudokuTests.o .\build\Solver.o .\build\Parser.o -o .\build\Test.exe
 
-Tests.o: Tests.cpp
-	g++ -c Tests.cpp
+.\build\Tests.o: Tests.cpp
+	g++ -c Tests.cpp -o .\build\Tests.o
 
-SudokuTests.o: SudokuTests.cpp SudokuTests.h
-	g++ -c SudokuTests.cpp
+.\build\SudokuTests.o: SudokuTests.cpp SudokuTests.h
+	g++ -c SudokuTests.cpp -o .\build\SudokuTests.o
 
-SudokuSolver.o: ..\src\SudokuSolver.cpp ..\src\SudokuSolver.h
-	g++ -c ..\src\SudokuSolver.cpp
+.\build\Solver.o: ..\src\Solver.cpp ..\src\Solver.h
+	g++ -c ..\src\Solver.cpp -o .\build\Solver.o
+
+.\build\Parser.o: ..\src\Parser.cpp ..\src\Parser.h
+	g++ -c ..\src\Parser.cpp -o .\build\Parser.o
 
 clean:
-	rm Test.exe *.o
+	del .\build\Test.exe .\build\*.o

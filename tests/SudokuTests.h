@@ -1,21 +1,36 @@
 #pragma once
-struct TestResult
-{
-    int TestCount;
-    int GetAvgTimeInNs();
-    int Fails = 0;
-    int* times;
-};
+#include "../src/Solver.h"
+#include <string>
+namespace Sudoku{
+    struct TestResult
+    {
+        int TestCount;
+        int GetAvgTimeInNs();
+        int Fails = 0;
+        int* times;
+        bool* isSuccess;
+        std::string* statusMessages;
+        TestResult(int testCount);
+        ~TestResult();
+    };
 
-class SudokuTests
-{
-    private:
-        short** puzzles;
-        short** sollutions;
-        int PuzzleCount;
-    public:
-        SudokuTests(short** puzzles, short** sollutions, int N);
-        TestResult* Run();
-        bool AssertPuzzles(const short* puzzle1, const short* puzzle2);
-         
-};
+    template<int BASE>
+    class Tests
+    {
+        private:
+            static constexpr int WIDTH = BASE * BASE;
+            static constexpr int CELL_COUNT = WIDTH * WIDTH;
+            int** puzzles;
+            int** sollutions;
+            int PuzzleCount;
+            Solver<BASE>* solver;
+        public:
+            Tests(int** puzzles, int** sollutions, int N, Solver<BASE>* solver);
+            TestResult Run();
+            bool AssertPuzzles(const int* puzzle1, const int* puzzle2, std::string* errorMessage);
+            
+    };
+
+    template class Tests<3>;
+    template class Tests<4>;
+}

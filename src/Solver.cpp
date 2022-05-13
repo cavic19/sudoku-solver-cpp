@@ -1,9 +1,8 @@
-#pragma once
 #include "Solver.h"
 #include <cstring>
 
 template<int BASE>
-void Solver<BASE>::Analyze(const int* puzzle, int* sollution)
+void Sudoku::Solver<BASE>::Analyze(const int* puzzle, int* sollution)
 {
     for (int row = 0; row < WIDTH; row++)
         for (int col = 0; col < WIDTH; col++)
@@ -25,9 +24,10 @@ void Solver<BASE>::Analyze(const int* puzzle, int* sollution)
 }
 
 template<int BASE>
-bool Solver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
+bool Sudoku::Solver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
 {
     if (emptyCellIndex < 0) return true;
+    
     int rowInd = emptyCells[emptyCellIndex].Row;
     int colInd = emptyCells[emptyCellIndex].Coll;
     int boxInd = emptyCells[emptyCellIndex].Box;
@@ -55,7 +55,7 @@ bool Solver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
 }
 
 template<int BASE>
-void Solver<BASE>::Solve(const int* puzzle, int* sollution)
+void Sudoku::Solver<BASE>::Solve(const int* puzzle, int* sollution)
 {
     emptyCellsCount = 0;
     for (int i = 0; i < WIDTH; i++)
@@ -69,7 +69,7 @@ void Solver<BASE>::Solve(const int* puzzle, int* sollution)
 }
 
 template<int BASE>
-inline short Solver<BASE>::NextCandidate(short candidates)
+inline short Sudoku::Solver<BASE>::NextCandidate(short candidates)
 {
     return ~candidates & -~candidates;
 }

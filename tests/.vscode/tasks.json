@@ -8,8 +8,10 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
+                "..\\src\\Solver.cpp",
+                "SudokuTests.cpp",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "tests.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"

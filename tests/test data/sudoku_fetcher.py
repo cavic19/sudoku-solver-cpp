@@ -91,7 +91,7 @@ class SudokuPuzzleOnline(SudokuFetcher):
                     puzzle_row.append("X")
                 else:
                     puzzle_row.append(cell.string)
-                sollution_row.append(cell.string)
+                sollution_row.append(cell.string.lower())
             puzzle.append(puzzle_row)
             sollution.append(sollution_row)
         return puzzle, sollution
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument('-o', type=str, help="Cesta ulozeni  sudoku.")
 
     args = parser.parse_args()
-    fetcher = SudokuDragonFetcher(args.d)
+    fetcher = SudokuPuzzleOnline(args.d)
 
     with open(args.o,"w") as f:
         for formatted_puzzle in fetcher.fetch(args.n):

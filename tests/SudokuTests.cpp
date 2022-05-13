@@ -1,8 +1,7 @@
 #include "SudokuTests.h"
-#include "../src/SudokuSolver.h"
 #include <chrono>
 
-int TestResult::GetAvgTimeInNs()
+int Sudoku::TestResult::GetAvgTimeInNs()
 {
     int sum = 0;
     for (int i = 0; i < TestCount; i++)
@@ -12,34 +11,66 @@ int TestResult::GetAvgTimeInNs()
     return sum / TestCount;
 }
 
-SudokuTests::SudokuTests(short** puzzles, short** sollutions, int N) : puzzles(puzzles), sollutions(sollutions), PuzzleCount(N) {}
-
-bool SudokuTests::AssertPuzzles(const short* puzzle1, const short* puzzle2)
+Sudoku::TestResult::TestResult(int testCount) : TestCount(testCount)
 {
-    for (int i = 0; i < 9 * 9; i++)
-        if (puzzle1[i] != puzzle2[i])
-            return false;
-    return true;   
+    isSuccess = new bool[testCount];
+    times = new int[testCount];
+    statusMessages = new std::string[testCount];
+}
+
+Sudoku::TestResult::~TestResult()
+{
+    delete[] isSuccess;
+    delete[] times;
+    delete[] statusMessages;
+}
+
+template<int BASE>
+Sudoku::Tests<BASE>::Tests(int** puzzles, int** sollutions, int N, Solver<BASE>* solver) : puzzles(puzzles), sollutions(sollutions), PuzzleCount(N), solver(solver) 
+{}
+
+template<int BASE>
+bool Sudoku::Tests<BASE>::AssertPuzzles(const int* puzzle1, const int* puzzle2, std::string* errorMessage)
+{
+    bool isSuccess = true;
+    for (int i = 0; i < WIDTH; i++)
+    {
+        for (int j = 0; j < WIDTH; j++)
+        {
+            if (puzzle1[i * WIDTH + j] == puzzle2[i * WIDTH + j])
+            {
+                *errorMessage  += std::to_string(puzzle1[i * WIDTH + j]) + ", ";
+            }
+            else
+            {   
+                *errorMessage  += std::to_string(puzzle1[i * WIDTH + j]) + "[" + std::to_string(puzzle2[i * WIDTH + j]) + "], ";
+                isSuccess = false;
+            }
+        }
+        *errorMessage += '\n';
+    }
+    return isSuccess;
 }
 
 
-TestResult* SudokuTests::Run()
+template<int BASE>
+Sudoku::TestResult Sudoku::Tests<BASE>::Run()
 {
-    TestResult* result = new TestResult();
-    result->times = new int[PuzzleCount];
-    result->TestCount = PuzzleCount;
+    TestResult* result = new TestResult(PuzzleCount);
 
-    short actualSolution[9 * 9] = {0};
+    int actualSolution[CELL_COUNT] = {0};
     for (int i = 0; i < PuzzleCount; i++)
     {
         std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-        solve(puzzles[i], actualSolution);
+        solver->Solve(puzzles[i], actualSolution);
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         result->times[i] = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
-        
-        bool isSuccess = AssertPuzzles(actualSolution, sollutions[i]);
-        result->Fails += !isSuccess;
+        std::string errorMessage = "";
+        bool success = AssertPuzzles(actualSolution, sollutions[i], &errorMessage);
+        result->statusMessages[i] = errorMessage;      
+        result->isSuccess[i] = success;  
+        result->Fails += !success;      
     }
-    return result;
+    return *result;
 }    
 
