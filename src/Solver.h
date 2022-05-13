@@ -22,12 +22,18 @@ namespace Sudoku
             short boxes[WIDTH];
             Cell emptyCells[CELL_COUNT];
             int emptyCellsCount;
-            
+
+            bool countsSolutions;
+            int lastFoundSolutions = 0;
+
             inline short NextCandidate(short availableCandidates);
             void Analyze(const int* puzzle, int* sollution);
             bool Backtrack(int* puzzle, int emptyCellIndex);
         public:
+            Solver(bool countsSolutions = false);
             void Solve(const int* puzzle, int* sollution);
+            int GetLastFoundSolutions() const;
+            bool WasSolutionFound() const;
     };
 
     template class Solver<3>;

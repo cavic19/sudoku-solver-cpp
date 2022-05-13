@@ -14,8 +14,16 @@ int main()
     int expectedSollution[256];
     int actualSollution[256];
     parser.Parse(test, puzzle, expectedSollution);    
-    Solver<4> solver;
+    Solver<4> solver(true);
+
+    cout << "Solutions: " << solver.GetLastFoundSolutions() << endl;
+    cout << "Found solutions?" << solver.WasSolutionFound() << endl;
+    cout << endl;
     solver.Solve(puzzle, actualSollution);
+
+    cout << "Solutions: " << solver.GetLastFoundSolutions() << endl;
+    cout << "Found solutions?" << solver.WasSolutionFound() << endl;
+
     string errorMessage = "";
     if (!AssertPuzzles(actualSollution, expectedSollution, &errorMessage))
     {
@@ -33,17 +41,16 @@ bool AssertPuzzles(const int* puzzle1, const int* puzzle2, string* errorMessage)
         {
             if (puzzle1[i * 16 + j] == puzzle2[i * 16 + j])
             {
-                *errorMessage  += to_string(puzzle1[i * 16 + j]) + ", ";
+                *errorMessage += to_string(puzzle1[i * 16 + j]) + ", ";
             }
             else
             {   
-                *errorMessage  += to_string(puzzle1[i * 16 + j]) + "[" + to_string(puzzle2[i * 16 + j]) + "], ";
+                *errorMessage += to_string(puzzle1[i * 16 + j]) + "[" + to_string(puzzle2[i * 16 + j]) + "], ";
                 isSuccess = false;
             }
         }
         *errorMessage += '\n';
     }
-
 
     return isSuccess;
 }

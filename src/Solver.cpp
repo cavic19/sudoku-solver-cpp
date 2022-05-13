@@ -26,7 +26,11 @@ void Sudoku::Solver<BASE>::Analyze(const int* puzzle, int* sollution)
 template<int BASE>
 bool Sudoku::Solver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
 {
-    if (emptyCellIndex < 0) return true;
+    if (emptyCellIndex < 0)
+    {
+        lastFoundSolutions++;
+        return !countsSolutions;
+    }
     
     int rowInd = emptyCells[emptyCellIndex].Row;
     int colInd = emptyCells[emptyCellIndex].Coll;
@@ -58,6 +62,7 @@ template<int BASE>
 void Sudoku::Solver<BASE>::Solve(const int* puzzle, int* sollution)
 {
     emptyCellsCount = 0;
+    lastFoundSolutions = 0;
     for (int i = 0; i < WIDTH; i++)
     {
         rows[i] = 0;
@@ -72,4 +77,20 @@ template<int BASE>
 inline short Sudoku::Solver<BASE>::NextCandidate(short candidates)
 {
     return ~candidates & -~candidates;
+}
+
+template<int BASE>
+Sudoku::Solver<BASE>::Solver(bool countsSolutions) : countsSolutions(countsSolutions)
+{}
+
+template<int BASE>
+bool Sudoku::Solver<BASE>::WasSolutionFound() const
+{
+    return lastFoundSolutions > 0;
+}
+
+template<int BASE>
+int Sudoku::Solver<BASE>::GetLastFoundSolutions() const
+{
+    return lastFoundSolutions;
 }
