@@ -9,52 +9,75 @@
 
 using namespace std;
 using namespace Sudoku;
-void printPuzzle(const int* puzzle);
+
+const int SUDOKU_BASE = 4;
+const int SUDOKU_SIZE = SUDOKU_BASE * SUDOKU_BASE;
+const int PUZZLES_BUFFER_SIZE = 500;
+int **puzzles, **solutions, puzzleCount = 0;
+void apendPuzzleAndSolutionsFromFiles(char** file_paths, int length);
+void printTestResult(TestResult &t, bool printDetails = false);
+void cleanUp();
+
 int main(int argc, char **argv)
 {
-    int** puzzles = new int*[500];
-    int** sollutions = new int*[500];
-    int puzzleCount = 0;
-    Parser parser(16);
-    for (int i = 1; i < argc; i++)
+    puzzles = new int*[PUZZLES_BUFFER_SIZE];
+    solutions = new int*[PUZZLES_BUFFER_SIZE];
+    apendPuzzleAndSolutionsFromFiles(argv + 1, argc - 1);
+
+
+    Solver<SUDOKU_BASE> solver;
+    Tests<SUDOKU_BASE> tests(puzzles, solutions, puzzleCount, &solver);
+    TestResult t = tests.Run();
+    printTestResult(t);
+    void cleanUp();
+}
+
+void apendPuzzleAndSolutionsFromFiles(char** file_paths, int length)
+{
+    Parser parser(SUDOKU_SIZE);
+    for (int i = 0; i < length; i++)
     {
-        string filePath(argv[i]);
+        string filePath(file_paths[i]);
         ifstream file(filePath);
         string line;
         while(getline(file, line))
         {
             int* puzzle = new int[256];
-            int* sollution = new int[256];
-            parser.Parse(line, puzzle, sollution);
+            int* solution = new int[256];
+            parser.Parse(line, puzzle, solution);
             puzzles[puzzleCount] = puzzle;
-            sollutions[puzzleCount++] = sollution;
+            solutions[puzzleCount++] = solution;
         }
         file.close();
     }
+}
 
-
-    Solver<4> solver;
-    Tests<4> tests(puzzles, sollutions, puzzleCount, &solver);
-    TestResult t = tests.Run();
+void printTestResult(TestResult &t, bool printDetails)
+{
     cout << "Tests: " << t.TestCount << endl;
-    cout << "Fails: " << t.Fails << endl;
-    cout << "Times: " << endl;
-    for (int i = 0; i < t.TestCount; i++)
+    if (printDetails)
     {
-        cout << i << ": " << t.times[i] << "[ns]" << "\t" << (t.isSuccess[i] ? "OK" : "FAIL") << endl;
-        if(!t.isSuccess[i])
+        cout << "Times: " << endl;
+        for (int i = 0; i < t.TestCount; i++)
         {
-            cout << t.statusMessages[i] << endl;
+            cout << i << ": " << t.times[i] << "[ns]" << "\t" << (t.isSuccess[i] ? "OK" : "FAIL") << endl;
+            if(!t.isSuccess[i])
+            {
+                cout << t.statusMessages[i] << endl;
+            }
         }
     }
-    cout << "Average: " << t.GetAvgTimeInNs() << "[ns]" << endl;
-    
+    if (t.Fails > 0)
+        cout << "Fails: " << t.Fails << endl;
+    cout << "Avg[ns]: " << t.GetAvgTimeInNs() << endl;
+}
 
+void cleanUp()
+{
     for (int i = 0; i < puzzleCount; i++ )
     {
         delete[] puzzles[i];
     }
     delete[] puzzles;
 }
-
 
