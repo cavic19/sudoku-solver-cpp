@@ -22,8 +22,11 @@ namespace Sudoku
             short boxes[WIDTH];
             Cell emptyCells[CELL_COUNT];
             int emptyCellsCount;
-            
+                    
             inline short NextCandidate(short availableCandidates);
+            inline int CountCandidates(Sudoku::Cell cell);
+
+            void SortEmptyCells(int offset = 0);
             void Analyze(const int* puzzle, int* sollution);
             bool Backtrack(int* puzzle, int emptyCellIndex);
         public:

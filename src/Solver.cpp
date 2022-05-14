@@ -20,6 +20,7 @@ void Sudoku::Solver<BASE>::Analyze(const int* puzzle, int* sollution)
                 emptyCells[emptyCellsCount++] = {row, col, box};
             }
         }
+    SortEmptyCells();
     memcpy(sollution, puzzle, sizeof(int) * CELL_COUNT);
 }
 
@@ -68,8 +69,56 @@ void Sudoku::Solver<BASE>::Solve(const int* puzzle, int* sollution)
     Backtrack(sollution, emptyCellsCount - 1);
 }
 
+
 template<int BASE>
 inline short Sudoku::Solver<BASE>::NextCandidate(short candidates)
 {
     return ~candidates & -~candidates;
+}
+
+
+
+
+template<int BASE>
+inline int Sudoku::Solver<BASE>::CountCandidates(Sudoku::Cell cell)
+{
+    int rowInd = cell.Row;
+    int colInd = cell.Coll;
+    int boxInd = cell.Box;
+
+    return sizeof(short) - __builtin_popcount(rows[rowInd] | cols[colInd] | boxes[boxInd]);
+}
+
+inline void SwapCells(int pos1, int pos2)
+{
+    Sudoku::Cell* array;
+
+}
+
+template<int BASE>
+void Sudoku::Solver<BASE>::SortEmptyCells(int offset)
+{
+    if(offset != 0)
+    {
+        int prevRowInd = emptyCells[emptyCellsCount - offset + 1].Row;
+        int prevColInd = emptyCells[emptyCellsCount - offset + 1].Col;
+        int prevBoxInd = emptyCells[emptyCellsCount - offset + 1].Box;
+    }
+    
+    int minInd = 0;
+    int min = 17;
+    for (int i = 0; i < emptyCellsCount - offset; i++)
+    {
+        int candidates = CountCandidates(i) - (prevRowInd == emptyCells[i].Row || prevColInd == emptyCells[i].Col  || prevBoxInd == emptyCells[i].Box );
+        if (candidates < min)
+        {
+            min = candidates;
+            minInd = i;
+        }         
+    }
+    Sudoku::Cell temp = emptyCells[emptyCellsCount - offset];
+    emptyCells[emptyCellsCount - offset] = emptyCells[minInd];
+    emptyCells[minInd] = temp;
+
+    return SortEmptyCells(++offset);   
 }
