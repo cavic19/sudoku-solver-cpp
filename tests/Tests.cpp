@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <cassert>
-#include "../src/Solver.h"
+#include "../src/BacktrackingSolver.h"
 #include "../src/Parser.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     apendPuzzleAndSolutionsFromFiles(argv + 1, argc - 1);
 
 
-    Solver<SUDOKU_BASE> solver;
+    BacktrackingSolver<SUDOKU_BASE> solver;
     Tests<SUDOKU_BASE> tests(puzzles, solutions, puzzleCount, &solver);
     TestResult t = tests.Run();
     printTestResult(t);

@@ -1,8 +1,8 @@
-#include "Solver.h"
+#include "BacktrackingSolver.h"
 #include <cstring>
 
 template<int BASE>
-void Sudoku::Solver<BASE>::Analyze(const int* puzzle, int* sollution)
+void Sudoku::BacktrackingSolver<BASE>::Analyze(const int* puzzle, int* sollution)
 {
     for (int row = 0; row < WIDTH; row++)
         for (int col = 0; col < WIDTH; col++)
@@ -24,7 +24,7 @@ void Sudoku::Solver<BASE>::Analyze(const int* puzzle, int* sollution)
 }
 
 template<int BASE>
-bool Sudoku::Solver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
+bool Sudoku::BacktrackingSolver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
 {
     if (emptyCellIndex < 0) return true;
     
@@ -55,7 +55,7 @@ bool Sudoku::Solver<BASE>::Backtrack(int* puzzle, int emptyCellIndex)
 }
 
 template<int BASE>
-void Sudoku::Solver<BASE>::Solve(const int* puzzle, int* sollution)
+void Sudoku::BacktrackingSolver<BASE>::Solve(const int* puzzle, int* sollution)
 {
     emptyCellsCount = 0;
     for (int i = 0; i < WIDTH; i++)
@@ -69,7 +69,7 @@ void Sudoku::Solver<BASE>::Solve(const int* puzzle, int* sollution)
 }
 
 template<int BASE>
-inline short Sudoku::Solver<BASE>::NextCandidate(short candidates)
+inline short Sudoku::BacktrackingSolver<BASE>::NextCandidate(short candidates)
 {
     return ~candidates & -~candidates;
 }
