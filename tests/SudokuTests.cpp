@@ -26,7 +26,7 @@ Sudoku::TestResult::~TestResult()
 }
 
 template<int BASE>
-Sudoku::Tests<BASE>::Tests(int** puzzles, int** sollutions, int N, Solver<BASE>* solver) : puzzles(puzzles), sollutions(sollutions), PuzzleCount(N), solver(solver) 
+Sudoku::Tests<BASE>::Tests(int** puzzles, int** sollutions, int N, BacktrackingSolver<BASE>* solver) : puzzles(puzzles), sollutions(sollutions), PuzzleCount(N), solver(solver) 
 {}
 
 template<int BASE>

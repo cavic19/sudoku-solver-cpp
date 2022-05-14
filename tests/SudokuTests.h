@@ -1,5 +1,5 @@
 #pragma once
-#include "../src/Solver.h"
+#include "../src/BacktrackingSolver.h"
 #include <string>
 namespace Sudoku{
     struct TestResult
@@ -23,9 +23,9 @@ namespace Sudoku{
             int** puzzles;
             int** sollutions;
             int PuzzleCount;
-            Solver<BASE>* solver;
+            BacktrackingSolver<BASE>* solver;
         public:
-            Tests(int** puzzles, int** sollutions, int N, Solver<BASE>* solver);
+            Tests(int** puzzles, int** sollutions, int N, BacktrackingSolver<BASE>* solver);
             TestResult Run();
             bool AssertPuzzles(const int* puzzle1, const int* puzzle2, std::string* errorMessage);
             

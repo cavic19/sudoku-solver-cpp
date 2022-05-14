@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Parser.h"
-#include "Solver.h"
+#include "BacktrackingSolver.h"
 #include <string>
 using namespace Sudoku;
 using namespace std;
@@ -14,7 +14,7 @@ int main()
     int expectedSollution[256];
     int actualSollution[256];
     parser.Parse(test, puzzle, expectedSollution);    
-    Solver<4> solver;
+    BacktrackingSolver<4> solver;
     solver.Solve(puzzle, actualSollution);
     string errorMessage = "";
     if (!AssertPuzzles(actualSollution, expectedSollution, &errorMessage))
