@@ -26,9 +26,6 @@ short colOccupants[DIM] = {0};
 short boxOccupants[DIM] = {0};
 
 std::vector<Cell> emptyCells;
-std::vector<Cell*> rows[DIM];
-std::vector<Cell*> cols[DIM];
-std::vector<Cell*> boxes[DIM];
 
 
 int* puzzle;
@@ -62,9 +59,6 @@ void init()
             else
             {
                 emptyCells.push_back({row, col, box});
-                rows[row].push_back(&emptyCells.back());
-                cols[col].push_back(&emptyCells.back());
-                boxes[box].push_back(&emptyCells.back());
             }
         }      
 }
@@ -90,41 +84,45 @@ void logCell(Cell c)
     std::cout << "Cell(" << c.RowInd << "," << c.ColInd <<"," << c.BoxInd << ")" << std::endl;
 }
 
+void logPeer(Cell c)
+{
+    std::cout << "Peer(" << c.RowInd << "," << c.ColInd <<"," << c.BoxInd << ")" << std::endl;
+}
 void propagate()
 {
     bool changed = false;
 
-    do // (1) Eliminate singlets
-    {
-        changed = false;
-        auto it = emptyCells.begin();
-        while(it != emptyCells.end())
-        {
-            auto c = *it;
-            std::cout << "Rule 1" << std::endl;
-            logCell(c);
-            short occupants = getOccupants(c);
-            if (countCandidates(occupants) == 1)
-            {
-                short value = getCandidate(occupants);
-                rowOccupants[c.RowInd] ^= value;
-                colOccupants[c.ColInd] ^= value;
-                boxOccupants[c.BoxInd] ^= value;
-                puzzle[c.RowInd * DIM + c.ColInd] =  __builtin_ffs(value);
-                changed = true;
-                it = emptyCells.erase(it);    
-            }
-            else
-            {
-                ++it;
-            }
-        }
-            std::cout << "First round end" << std::endl;
-    }
-    while(changed);
+    // do // (1) Eliminate singlets
+    // {
+    //     changed = false;
+    //     auto it = emptyCells.begin();
+    //     while(it != emptyCells.end())
+    //     {
+    //         auto c = *it;
+    //         std::cout << "Rule 1" << std::endl;
+    //         logCell(c);
+    //         short occupants = getOccupants(c);
+    //         if (countCandidates(occupants) == 1)
+    //         {
+    //             short value = getCandidate(occupants);
+    //             rowOccupants[c.RowInd] ^= value;
+    //             colOccupants[c.ColInd] ^= value;
+    //             boxOccupants[c.BoxInd] ^= value;
+    //             puzzle[c.RowInd * DIM + c.ColInd] =  __builtin_ffs(value);
+    //             changed = true;
+    //             it = emptyCells.erase(it);    
+    //         }
+    //         else
+    //         {
+    //             ++it;
+    //         }
+    //     }
+    //         std::cout << "First round end" << std::endl;
+    // }
+    // while(changed);
 
 
-    logStatus();
+    // logStatus();
 
     do // (2) 
     { 
@@ -133,70 +131,72 @@ void propagate()
         {
             Cell cell = *it;
             std::cout << "Rule 2" << std::endl;
-            logCell(cell);
             changed = false;
             // Checks peers in row
-            short cellOccupants = getOccupants(*it);
-            for (Cell* rowPeerCell : rows[cell.RowInd])
-            {
-                if(*rowPeerCell == cell) continue;
-                cellOccupants |= getOccupants(*rowPeerCell);
-            }
+            uint16_t uniqueOccupantsInRow, uniqueOccupantsInCol, uniqueOccupantsInBox;
+            uniqueOccupantsInRow = uniqueOccupantsInCol = uniqueOccupantsInBox = 511;
 
-            if(countCandidates(cellOccupants) == 1)
+            for (Cell peer : emptyCells)
             {
-                short newValue = getCandidate(cellOccupants);
-                rowOccupants[cell.RowInd] ^= newValue;
-                colOccupants[cell.ColInd] ^= newValue;
-                boxOccupants[cell.BoxInd] ^= newValue;
-                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue);
+                if(peer == cell)
+                {
+                    continue;
+                }
+                uint16_t peerOccupants = getOccupants(peer);
+                if(peer.RowInd == cell.RowInd)
+                {
+
+                    uniqueOccupantsInRow &= peerOccupants;
+                }
+                if(peer.ColInd == cell.ColInd)
+                {
+
+                    uniqueOccupantsInCol &= peerOccupants;
+                }
+                if(peer.BoxInd == cell.BoxInd)
+                {
+
+                    uniqueOccupantsInBox &= peerOccupants;
+                }               
+            }
+            auto candidates = ~getOccupants(cell);
+            uniqueOccupantsInRow &= candidates;
+            uniqueOccupantsInCol &= candidates;
+            uniqueOccupantsInBox &= candidates;
+
+            if(__builtin_popcount(uniqueOccupantsInRow) == 1)
+            {
+                rowOccupants[cell.RowInd] ^= uniqueOccupantsInRow;
+                colOccupants[cell.ColInd] ^= uniqueOccupantsInRow;
+                boxOccupants[cell.BoxInd] ^= uniqueOccupantsInRow;
+                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(uniqueOccupantsInRow);
                 changed = true;
                 it = emptyCells.erase(it);
                 continue;
             }
-
-
-            // Checks peers in column
-            cellOccupants = getOccupants(cell);
-            for (Cell* colPeerCell : cols[cell.ColInd])
+            if(__builtin_popcount(uniqueOccupantsInCol) == 1)
             {
-                if(*colPeerCell == cell) continue;
-                cellOccupants |= getOccupants(*colPeerCell);
-            }
-
-            if(countCandidates(cellOccupants) == 1)
-            {
-                short newValue = getCandidate(cellOccupants);
-                rowOccupants[cell.RowInd] ^= newValue;
-                colOccupants[cell.ColInd] ^= newValue;
-                boxOccupants[cell.BoxInd] ^= newValue;
-                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue) - 1;
+                rowOccupants[cell.RowInd] ^= uniqueOccupantsInCol;
+                colOccupants[cell.ColInd] ^= uniqueOccupantsInCol;
+                boxOccupants[cell.BoxInd] ^= uniqueOccupantsInCol;
+                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(uniqueOccupantsInCol);
                 changed = true;
                 it = emptyCells.erase(it);
                 continue;
             }
-
-            // Checks peers in boxes
-            cellOccupants = getOccupants(cell);
-            for (Cell* boxPeerCell : boxes[cell.BoxInd])
+            if(__builtin_popcount(uniqueOccupantsInBox) == 1)
             {
-                if(*boxPeerCell == cell) continue;
-                cellOccupants |= getOccupants(*boxPeerCell);
-            }
-
-            if(countCandidates(cellOccupants) == 1)
-            {
-                short newValue = getCandidate(cellOccupants);
-                rowOccupants[cell.RowInd] ^= newValue;
-                colOccupants[cell.ColInd] ^= newValue;
-                boxOccupants[cell.BoxInd] ^= newValue;
-                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue) - 1;
+                rowOccupants[cell.RowInd] ^= uniqueOccupantsInBox;
+                colOccupants[cell.ColInd] ^= uniqueOccupantsInBox;
+                boxOccupants[cell.BoxInd] ^= uniqueOccupantsInBox;
+                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(uniqueOccupantsInBox);
                 changed = true;
                 it = emptyCells.erase(it);
                 continue;
             }
             ++it;
         }
+        logStatus();
     } 
     while(changed);
     
