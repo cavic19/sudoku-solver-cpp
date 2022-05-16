@@ -1,5 +1,7 @@
 #include <vector>
-
+#include <cstring>
+#include <iostream>
+void logStatus();
 struct Cell
 {
     int RowInd;
@@ -29,7 +31,20 @@ std::vector<Cell*> cols[DIM];
 std::vector<Cell*> boxes[DIM];
 
 
-int puzzle[DIM * DIM];
+int* puzzle;
+
+void printPuzzle()
+{
+    for (int row = 0; row < DIM; row++)
+    {
+        for (int col = 0; col < DIM; col++)
+        {
+            std::cout << puzzle[row * DIM + col]  << " ";
+        }
+        std::cout << std::endl;
+    }
+    
+}
 
 void init()
 {
@@ -37,9 +52,9 @@ void init()
         for (int col = 0; col < DIM; col++)
         {
             int box = (row / BASE) * BASE + col / BASE;
-            if (puzzle[row * DIM + col] >= 0)
+            if (puzzle[row * DIM + col] != -1)
             {
-                short value = 1 << puzzle[row * DIM + col];
+                short value = 1 << puzzle[row * DIM + col] - 1;
                 rowOccupants[row] ^= value;
                 colOccupants[col] ^= value;
                 boxOccupants[box] ^= value;
@@ -70,15 +85,24 @@ inline short getCandidate(short occupants)
     return ~occupants & -~occupants;
 }
 
-bool propagate()
+void logCell(Cell c)
+{
+    std::cout << "Cell(" << c.RowInd << "," << c.ColInd <<"," << c.BoxInd << ")" << std::endl;
+}
+
+void propagate()
 {
     bool changed = false;
 
     do // (1) Eliminate singlets
     {
-        bool changed = false;
-        for (Cell c : emptyCells)
+        changed = false;
+        auto it = emptyCells.begin();
+        while(it != emptyCells.end())
         {
+            auto c = *it;
+            std::cout << "Rule 1" << std::endl;
+            logCell(c);
             short occupants = getOccupants(c);
             if (countCandidates(occupants) == 1)
             {
@@ -86,23 +110,33 @@ bool propagate()
                 rowOccupants[c.RowInd] ^= value;
                 colOccupants[c.ColInd] ^= value;
                 boxOccupants[c.BoxInd] ^= value;
-                puzzle[c.RowInd * DIM + c.ColInd] =  __builtin_ffs(value) - 1;
-                changed = true;    
+                puzzle[c.RowInd * DIM + c.ColInd] =  __builtin_ffs(value);
+                changed = true;
+                it = emptyCells.erase(it);    
+            }
+            else
+            {
+                ++it;
             }
         }
+            std::cout << "First round end" << std::endl;
     }
     while(changed);
 
 
-
+    logStatus();
 
     do // (2) 
     { 
-        for (Cell cell : emptyCells)
+        auto it = emptyCells.begin();
+        while(it != emptyCells.end())
         {
+            Cell cell = *it;
+            std::cout << "Rule 2" << std::endl;
+            logCell(cell);
             changed = false;
             // Checks peers in row
-            short cellOccupants = getOccupants(cell);
+            short cellOccupants = getOccupants(*it);
             for (Cell* rowPeerCell : rows[cell.RowInd])
             {
                 if(*rowPeerCell == cell) continue;
@@ -115,14 +149,15 @@ bool propagate()
                 rowOccupants[cell.RowInd] ^= newValue;
                 colOccupants[cell.ColInd] ^= newValue;
                 boxOccupants[cell.BoxInd] ^= newValue;
-                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue) - 1;
+                puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue);
                 changed = true;
+                it = emptyCells.erase(it);
                 continue;
             }
 
 
             // Checks peers in column
-            short cellOccupants = getOccupants(cell);
+            cellOccupants = getOccupants(cell);
             for (Cell* colPeerCell : cols[cell.ColInd])
             {
                 if(*colPeerCell == cell) continue;
@@ -137,11 +172,12 @@ bool propagate()
                 boxOccupants[cell.BoxInd] ^= newValue;
                 puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue) - 1;
                 changed = true;
+                it = emptyCells.erase(it);
                 continue;
             }
 
             // Checks peers in boxes
-            short cellOccupants = getOccupants(cell);
+            cellOccupants = getOccupants(cell);
             for (Cell* boxPeerCell : boxes[cell.BoxInd])
             {
                 if(*boxPeerCell == cell) continue;
@@ -156,10 +192,57 @@ bool propagate()
                 boxOccupants[cell.BoxInd] ^= newValue;
                 puzzle[cell.RowInd * DIM + cell.ColInd] = __builtin_ffs(newValue) - 1;
                 changed = true;
+                it = emptyCells.erase(it);
                 continue;
             }
+            ++it;
         }
     } 
     while(changed);
+    
+}
+
+
+void solve(const int* puzzleee, int* solution)
+{
+    std::memcpy(solution, puzzleee, sizeof(int) * 81);
+    puzzle = solution;
+
+
+    init();
+
+    logStatus();
+
+    propagate();
+}
+
+
+void logStatus()
+{
+    for (int row = 0; row < DIM; row++)
+    {
+        for (int col = 0; col < DIM; col++)
+        {
+            if(puzzle[row * 9 + col] != -1)
+            {
+                std::cout << puzzle[row * 9 + col] << ",";
+                continue;
+            }
+            int box = (row / BASE) * BASE + col / BASE;
+            Cell c = {row, col, box};
+            auto occupants = getOccupants(c);
+            short candiates = 511 ^ occupants;
+            for (int i = 0; i < DIM; i++)
+            {
+                if(candiates & (1 << i))
+                {
+                    std::cout << i + 1;
+                }
+            }
+            std::cout << ",";
+            
+        }
+        std::cout << std::endl;
+    }
     
 }

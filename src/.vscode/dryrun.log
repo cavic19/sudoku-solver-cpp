@@ -1,0 +1,6 @@
+make.exe --dry-run --always-make --keep-going --print-directory
+make: Entering directory 'c:/Users/david/OneDrive/Plocha/škola/páťák/Letní semestr/PAA/zapoctak/src'
+make: Leaving directory 'c:/Users/david/OneDrive/Plocha/škola/páťák/Letní semestr/PAA/zapoctak/src'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
