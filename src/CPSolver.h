@@ -1,5 +1,8 @@
 #pragma once
 #include "Board.h"
+#include <cstring>
+
+
 namespace Sudoku
 {
     template<int BASE>
@@ -12,8 +15,15 @@ namespace Sudoku
             bool SolveLoneRangersStrategy(Cell &cell);
             bool SolveByCombinationOfBothStrategies(Cell &cell);
 
-            inline bool HasLastCandidate(uint16_t occupants);
-            inline uint16_t GetNextCandidate(uint16_t occupants);
+            inline bool HasLastCandidate(uint16_t occupants)
+            {
+                return board->WIDTH - 1 == __builtin_popcount(occupants);
+            }
+
+            inline uint16_t GetNextCandidate(uint16_t occupants)
+            {
+                return ~occupants & -~occupants;
+            }
 
         public:
             void Solve(const int* puzzle, int* solution);

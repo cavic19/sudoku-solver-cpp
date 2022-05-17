@@ -111,17 +111,7 @@ bool Sudoku::CPSolver<BASE>::SolveByCombinationOfBothStrategies(Cell &cell)
 }
 
 
-template<int BASE>
-inline bool Sudoku::CPSolver<BASE>::HasLastCandidate(uint16_t occupants)
-{
-    return board->WIDTH - 1 == __builtin_popcount(occupants);
-}
 
-template<int BASE>
-inline uint16_t Sudoku::CPSolver<BASE>::GetNextCandidate(uint16_t occupants)
-{
-    return ~occupants & -~occupants;
-}
 
 
 template class Sudoku::CPSolver<2>;
