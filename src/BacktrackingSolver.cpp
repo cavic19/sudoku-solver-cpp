@@ -1,6 +1,5 @@
 #include "BacktrackingSolver.h"
 #include <cstring>
-
 template<int BASE>
 void Sudoku::BacktrackingSolver<BASE>::Analyze(const int* puzzle, int* sollution)
 {

@@ -1,7 +1,7 @@
 #pragma once
 namespace Sudoku
 {
-    struct Cell
+    struct CellBC
     {
         int Row;
         int Coll;
@@ -20,7 +20,7 @@ namespace Sudoku
             short rows[WIDTH];
             short cols[WIDTH];
             short boxes[WIDTH];
-            Cell emptyCells[CELL_COUNT];
+            CellBC emptyCells[CELL_COUNT];
             int emptyCellsCount;
             
             inline short NextCandidate(short availableCandidates);

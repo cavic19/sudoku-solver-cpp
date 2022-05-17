@@ -30,6 +30,7 @@ void Sudoku::printBoardWithCandidates(const Board<BASE>* board)
         }
         std::cout << std::endl;
     }
+    std::cout << std::endl;
 }
 
 template<int BASE>

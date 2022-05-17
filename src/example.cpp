@@ -3,6 +3,8 @@
 #include <string>
 #include "CPSolver.h"
 #include "Logging.h"
+#include <chrono>
+#include "BacktrackingSolver.h"
 
 using namespace Sudoku;
 using namespace std;
@@ -17,11 +19,19 @@ int main()
     int actualSollution[81];
     parser.Parse(easyPuzzle, puzzle, expectedSollution);   
     CPSolver<3> solver;
+    chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
     solver.Solve(puzzle, actualSollution);
-    printPuzzle(actualSollution, 9);
+    chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    cout << "Time CP: " << chrono::duration_cast<chrono::nanoseconds> (end - start).count() << "[ns]" << endl;
 
-    string errorMessage = "";  
-    assertPuzzles(actualSollution, expectedSollution);
+    int actualSollutionBc[81];
+    BacktrackingSolver<3> bcSolver;
+    start = std::chrono::steady_clock::now();
+    bcSolver.Solve(puzzle, actualSollutionBc);
+    end = std::chrono::steady_clock::now();
+    cout << "Time BC: " << chrono::duration_cast<chrono::nanoseconds> (end - start).count() << "[ns]" << endl;
+
+    // assertPuzzles(actualSollution, expectedSollution);
     return 0;
 }
 

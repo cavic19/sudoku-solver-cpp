@@ -10,6 +10,7 @@ namespace Sudoku
             void ApplyStrattegy(bool (Sudoku::CPSolver<BASE>::*strategy)(Cell&));
             bool SolveSinglesStrategy(Cell &cell);
             bool SolveLoneRangersStrategy(Cell &cell);
+            bool SolveByCombinationOfBothStrategies(Cell &cell);
 
             inline bool HasLastCandidate(uint16_t occupants);
             inline uint16_t GetNextCandidate(uint16_t occupants);

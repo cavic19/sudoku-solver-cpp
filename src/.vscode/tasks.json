@@ -11,6 +11,7 @@
                 "CPSolver.cpp",
                 "Parser.cpp",
                 "Board.cpp",
+                "Logging.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

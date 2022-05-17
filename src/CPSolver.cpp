@@ -2,16 +2,15 @@
 #include <cstring>
 #include "Board.h"
 #include "Logging.h"
-#define LOG
-
+// #define LOG
 
 template<int BASE>
 void Sudoku::CPSolver<BASE>::Solve(const int* puzzle, int* solution)
 {
     board = new Board<BASE>(puzzle, solution);
-
-    // ApplyStrattegy(&CPSolver<BASE>::SolveSinglesStrategy);
-    ApplyStrattegy(&SolveLoneRangersStrategy);
+    // ApplyStrattegy(&SolveByCombinationOfBothStrategies);
+    ApplyStrattegy(&CPSolver<BASE>::SolveSinglesStrategy);
+    // ApplyStrattegy(&SolveLoneRangersStrategy);
 }
 
 template<int BASE>
@@ -75,38 +74,41 @@ bool Sudoku::CPSolver<BASE>::SolveLoneRangersStrategy(Cell &cell)
         }
         if(peer.ColInd == cell.ColInd)
         {
-
             uniqueOccupantsInCol &= peerOccupants;
         }
         if(peer.BoxInd == cell.BoxInd)
         {
-
             uniqueOccupantsInBox &= peerOccupants;
         }
     }
 
     if(__builtin_popcount(uniqueOccupantsInRow) == 1)
-        {
-            board->SetValue(cell, uniqueOccupantsInRow);
-            return true;
-        }
+    {
+        board->SetValue(cell, uniqueOccupantsInRow);
+        return true;
+    }
 
-        if(__builtin_popcount(uniqueOccupantsInCol) == 1)
-        {
-            board->SetValue(cell, uniqueOccupantsInCol);
-            return true;
-        }
+    if(__builtin_popcount(uniqueOccupantsInCol) == 1)
+    {
+        board->SetValue(cell, uniqueOccupantsInCol);
+        return true;
+    }
 
-        if(__builtin_popcount(uniqueOccupantsInBox) == 1)
-        {
-            board->SetValue(cell, uniqueOccupantsInBox);
-            return true;
-        }
+    if(__builtin_popcount(uniqueOccupantsInBox) == 1)
+    {
+        board->SetValue(cell, uniqueOccupantsInBox);
+        return true;
+    }
 
     return false;
 }
 
 
+template<int BASE>
+bool Sudoku::CPSolver<BASE>::SolveByCombinationOfBothStrategies(Cell &cell)
+{
+    return SolveSinglesStrategy(cell) || SolveLoneRangersStrategy(cell);
+}
 
 
 template<int BASE>
