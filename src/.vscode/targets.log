@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon May 16 10:56:17 2022
+# Make data base, printed on Tue May 17 14:44:02 2022
 
 # Variables
 
@@ -23,9 +23,9 @@ USERPROFILE = C:\Users\david
 # environment
 LOCALAPPDATA = C:\Users\david\AppData\Local
 # environment
-VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-f2a8aa94-9f31-44df-a0c3-e625d4e1541a-sock
+VSCODE_IPC_HOOK_EXTHOST = \\.\pipe\vscode-ipc-9be353d7-fa78-42ee-85b3-b9eb47dcd983-sock
 # environment
-VSCODE_CWD = C:\Users\david\OneDrive\Plocha\škola\páťák\Letní semestr\PAA\zapoctak\src
+VSCODE_CWD = C:\Users\david\AppData\Local\Programs\Microsoft VS Code
 # environment
 CHOCOLATEYINSTALL = C:\ProgramData\chocolatey
 # environment
@@ -33,13 +33,13 @@ SYSTEMROOT = C:\WINDOWS
 # environment
 PROCESSOR_LEVEL = 23
 # environment
-PSMODULEPATH = C:\Users\david\OneDrive\Dokumenty\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\PowerShell\Modules\
+PSMODULEPATH = C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files (x86)\Microsoft SQL Server\150\Tools\PowerShell\Modules\
 # default
 MAKE_COMMAND := C:/ProgramData/chocolatey/lib/make/tools/install/bin/make.exe
 # automatic
 @D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
 # environment
-CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_18260_ICOMPCGCGRTPNUQU
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_5412_YYAHLTOUZIYNRREI
 # environment
 VS160COMCOMNTOOLS = C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\
 # environment
@@ -101,7 +101,7 @@ MAKEFILE_LIST :=
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 18260
+VSCODE_PID = 5412
 # automatic
 ?D = $(patsubst %/,%,$(patsubst %\,%,$(dir $?)))
 # environment
@@ -161,7 +161,7 @@ COMMONPROGRAMFILES = C:\Program Files (x86)\Common Files
 # environment
 PROGRAMW6432 = C:\Program Files
 # environment
-PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
 # automatic
 +F = $(notdir $+)
 # environment
@@ -172,6 +172,8 @@ USERDOMAIN = DESKTOP-1HTVJF9
 GNUMAKEFLAGS := 
 # environment
 OS = Windows_NT
+# environment
+__COMPAT_LAYER = ElevateCreateProcess
 # makefile
 .DEFAULT_GOAL := 
 # default
@@ -214,10 +216,6 @@ SUFFIXES :=
 ALLUSERSPROFILE = C:\ProgramData
 # environment
 SESSIONNAME = Console
-# environment
-VSCODE_CLI = 1
-# environment
-ELECTRON_NO_ATTACH_CONSOLE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync load
 # environment
@@ -227,7 +225,7 @@ PROCESSOR_REVISION = 1801
 # environment
 PROCESSOR_IDENTIFIER = AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD
 # variable set hash-table stats:
-# Load=107/1024=10%, Rehash=0, Collisions=11/131=8%
+# Load=106/1024=10%, Rehash=0, Collisions=11/130=8%
 
 # Pattern-specific Variable Values
 
@@ -235,9 +233,9 @@ PROCESSOR_IDENTIFIER = AMD64 Family 23 Model 24 Stepping 1, AuthenticAMD
 
 # Directories
 
-# . (key c:/Users/david/OneDrive/Plocha/škola/páťák/Letní semestr/PAA/zapoctak/src, mtime 1652691374): 10 files, no impossibilities.
+# . (key c:/Users/david/OneDrive/Plocha/škola/páťák/Letní semestr/PAA/zapoctak/src, mtime 1652791263): 13 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -294,12 +292,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 17 / storage = 180 B / avg = 10 B
-# current buf: size = 8174 B / used = 180 B / count = 17 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 20 / storage = 209 B / avg = 10 B
+# current buf: size = 8174 B / used = 209 B / count = 20 / avg = 10 B
 
-# strcache performance: lookups = 20 / hit rate = 15%
+# strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
-# Load=17/8192=0%, Rehash=0, Collisions=0/20=0%
-# Finished Make data base on Mon May 16 10:56:17 2022
+# Load=20/8192=0%, Rehash=0, Collisions=0/23=0%
+# Finished Make data base on Tue May 17 14:44:02 2022
 
  
