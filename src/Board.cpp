@@ -20,17 +20,26 @@ void Sudoku::Board<BASE>::Init()
             }
             else
             {
-                EmptyCells.push_back({row, col, box});
+                EmptyCells[EmptyCellsCount++] = {row, col, box};
             }
         }
 }
 
 template<int BASE>
-Sudoku::Board<BASE>::Board(const int* puzzle, int* solution, int emptyValue) : EMPTY_VALUE(emptyValue), solution(solution)
+Sudoku::Board<BASE>::Board(const int* puzzle, const int emptyValue) : EMPTY_VALUE(emptyValue)
 {
-    EmptyCells.reserve(CELL_COUNT);
     std::memcpy(solution, puzzle, sizeof(int) * CELL_COUNT);
     Init();
+}
+
+template<int BASE>
+Sudoku::Board<BASE>::Board(const Board<BASE> &b)
+{
+    std::memcpy(solution, b.solution, sizeof(int) * CELL_COUNT);
+    std::memcpy(rowOccupants, b.rowOccupants, sizeof(uint16_t) * WIDTH);
+    std::memcpy(colOccupants, b.colOccupants, sizeof(uint16_t) * WIDTH);
+    std::memcpy(boxOccupants, b.boxOccupants, sizeof(uint16_t) * WIDTH);
+    
 }
 
 template<int BASE>
@@ -49,18 +58,12 @@ void Sudoku::Board<BASE>::SetValue(Cell cell, int value)
 }
 
 template<int BASE>
-int* Sudoku::Board<BASE>::GetSolution() const
+const int* Sudoku::Board<BASE>::GetSolution() const
 {
     return solution;
 }
 
-template<int BASE>
-void Sudoku::Board<BASE>::Eliminate(Cell& cell, uint16_t value)
-{
-    rowOccupants[cell.RowInd] ^= value;
-    colOccupants[cell.ColInd] ^= value;
-    boxOccupants[cell.BoxInd] ^= value;
-}
+
 
 
 template class Sudoku::Board<2>;
