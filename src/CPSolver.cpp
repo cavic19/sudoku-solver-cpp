@@ -5,16 +5,23 @@
 // #define LOG
 
 template<int BASE>
-void Sudoku::CPSolver<BASE>::Solve(const int* puzzle, int* solution)
+bool Sudoku::CPSolver<BASE>::Solve(const int* puzzle, Board<BASE>* board)
 {
-    board = new Board<BASE>(puzzle, solution);
+    this->board = board;
     // ApplyStrattegy(&SolveByCombinationOfBothStrategies);
-    ApplyStrattegy(&CPSolver<BASE>::SolveSinglesStrategy);
+    return ApplyStrattegy(&CPSolver<BASE>::SolveSinglesStrategy);
     // ApplyStrattegy(&SolveLoneRangersStrategy);
 }
 
 template<int BASE>
-void Sudoku::CPSolver<BASE>::ApplyStrattegy(bool (CPSolver<BASE>::*strategy) (Cell&))
+bool Sudoku::CPSolver<BASE>::Solve(const int* puzzle, int* solution)
+{
+    Board<BASE> b(puzzle, solution);
+    return Solve(puzzle, &b);
+}
+
+template<int BASE>
+bool Sudoku::CPSolver<BASE>::ApplyStrattegy(bool (CPSolver<BASE>::*strategy) (Cell&))
 {
     bool hasChanged = false;
     do
@@ -28,6 +35,11 @@ void Sudoku::CPSolver<BASE>::ApplyStrattegy(bool (CPSolver<BASE>::*strategy) (Ce
                 hasChanged = true;
                 it = board->EmptyCells.erase(it);
             }
+            else if (board->GetOccupants(*it) == board->CELL_COMPLETELY_OCCUPIED)
+            {
+                //conflict
+                return false;;
+            }
             else
             {
                 ++it;
@@ -37,6 +49,7 @@ void Sudoku::CPSolver<BASE>::ApplyStrattegy(bool (CPSolver<BASE>::*strategy) (Ce
         printBoardWithCandidates<BASE>(board);
         #endif
     } while (hasChanged);
+     return true;
 }
 
 

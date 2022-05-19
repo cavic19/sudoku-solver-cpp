@@ -9,8 +9,7 @@ namespace Sudoku
     class CPSolver
     {
         private:
-            Board<BASE>* board;
-            void ApplyStrattegy(bool (Sudoku::CPSolver<BASE>::*strategy)(Cell&));
+            bool ApplyStrattegy(bool (Sudoku::CPSolver<BASE>::*strategy)(Cell&));
             bool SolveSinglesStrategy(Cell &cell);
             bool SolveLoneRangersStrategy(Cell &cell);
             bool SolveByCombinationOfBothStrategies(Cell &cell);
@@ -26,6 +25,8 @@ namespace Sudoku
             }
 
         public:
-            void Solve(const int* puzzle, int* solution);
+            Board<BASE>* board;
+            bool Solve(const int* puzzle, int* solution);
+            bool Solve(const int* puzzle, Board<BASE>* board);
     };
 } // namespace Sudoku
