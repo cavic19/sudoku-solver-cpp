@@ -9,18 +9,21 @@ Sudoku::Parser::Parser(int dim, char sollutionSeparator, char emptyCellSymbol, i
 {
 }
 
+
+
 void Sudoku::Parser::Parse(const std::string line, int* puzzle, int* sollution) const
 {
     std::string puzzlePart = line.substr(0, line.find(sollutionSeparator)) + "\0";
     assert(puzzlePart.length() == dim * dim);
-    ParsePuzzle(puzzlePart, puzzle);
+    Parse(puzzlePart, puzzle);
     
     std::string sollutioPart = line.substr(line.find(sollutionSeparator) + 1, line.length());
     assert(sollutioPart.length() == dim * dim);
-    ParsePuzzle(sollutioPart, sollution);
+    Parse(sollutioPart, sollution);
 }
 
-void Sudoku::Parser::ParsePuzzle(const std::string line, int* puzzle) const
+
+void Sudoku::Parser::Parse(const std::string line, int* puzzle) const
 {
     for (int i = 0; i < dim * dim; i++)
     {
