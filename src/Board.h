@@ -37,9 +37,9 @@ namespace Sudoku
             void Eliminate(Cell& cell, uint16_t value);
 
         public:
-
-
+            bool IsSolved() const;
             std::vector<Cell> EmptyCells;
+            Board(const Board<BASE> &board, int* solution);
             Board(const int* puzzle, int* solution, int emptyValue = -1);
             void SetValue(Cell cell, uint16_t value);
             void SetValue(Cell cell, int value);

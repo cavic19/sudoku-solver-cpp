@@ -1,11 +1,19 @@
 #include "Board.h"
 #include <cstring>
 
+
+
+
 bool Sudoku::operator==(const Sudoku::Cell& cell1, const Sudoku::Cell& cell2)
 {
     return cell1.RowInd == cell2.RowInd && cell1.ColInd == cell2.ColInd;
 }
 
+template<int BASE>
+bool Sudoku::Board<BASE>::IsSolved() const
+{
+    return EmptyCells.size() == 0;
+}
 
 template<int BASE>
 void Sudoku::Board<BASE>::Init()
@@ -32,6 +40,19 @@ Sudoku::Board<BASE>::Board(const int* puzzle, int* solution, int emptyValue) : E
     std::memcpy(solution, puzzle, sizeof(int) * CELL_COUNT);
     Init();
 }
+
+template<int BASE>
+Sudoku::Board<BASE>::Board(const Board<BASE> &b, int* solution) : solution(solution), EMPTY_VALUE(b.EMPTY_VALUE)
+{
+    std::memcpy(rowOccupants, b.rowOccupants, sizeof(uint16_t) * WIDTH);
+    std::memcpy(colOccupants, b.colOccupants, sizeof(uint16_t) * WIDTH);
+    std::memcpy(boxOccupants, b.boxOccupants, sizeof(uint16_t) * WIDTH);
+    std::memcpy(solution, b.solution, sizeof(int) * CELL_COUNT);
+    EmptyCells = b.EmptyCells;
+}
+
+
+
 
 template<int BASE>
 void Sudoku::Board<BASE>::SetValue(Cell cell, uint16_t value)
