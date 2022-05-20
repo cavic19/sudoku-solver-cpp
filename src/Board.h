@@ -7,9 +7,9 @@ namespace Sudoku
 {
     struct Cell
     {
-        const int RowInd;
-        const int ColInd;
-        const int BoxInd;
+        int RowInd;
+        int ColInd;
+        int BoxInd;
 
         friend bool operator==(const Cell& cell1, const Cell& cell2);
     };
@@ -34,11 +34,18 @@ namespace Sudoku
             Board(const Board<BASE> &);
 
             void SetValue(Cell cell, uint16_t value);
+            void SetValueWithoutElimination(Cell cell, uint16_t value);
             void SetValue(Cell cell, int value);
             const int* GetSolution() const; 
             inline uint16_t GetOccupants(Cell cell) const
             {
                 return rowOccupants[cell.RowInd] | colOccupants[cell.ColInd] | boxOccupants[cell.BoxInd];
+            }
+            inline void Eliminate(Cell cell, uint16_t value)
+            {
+                rowOccupants[cell.RowInd] ^= value;
+                colOccupants[cell.ColInd] ^= value;
+                boxOccupants[cell.BoxInd] ^= value;
             }
 
         private:   
@@ -47,14 +54,6 @@ namespace Sudoku
             uint16_t rowOccupants[WIDTH] = {0};
             uint16_t colOccupants[WIDTH] = {0};
             uint16_t boxOccupants[WIDTH] = {0};
-
             void Init();
-            inline void Eliminate(Cell cell, uint16_t value)
-            {
-                rowOccupants[cell.RowInd] ^= value;
-                colOccupants[cell.ColInd] ^= value;
-                boxOccupants[cell.BoxInd] ^= value;
-            }
-
     };
 } // namespace Sudoku

@@ -33,7 +33,7 @@ Sudoku::Board<BASE>::Board(const int* puzzle, const int emptyValue) : EMPTY_VALU
 }
 
 template<int BASE>
-Sudoku::Board<BASE>::Board(const Board<BASE> &b)
+Sudoku::Board<BASE>::Board(const Board<BASE> &b) : EMPTY_VALUE(b.EMPTY_VALUE)
 {
     std::memcpy(solution, b.solution, sizeof(int) * CELL_COUNT);
     std::memcpy(rowOccupants, b.rowOccupants, sizeof(uint16_t) * WIDTH);
@@ -43,9 +43,15 @@ Sudoku::Board<BASE>::Board(const Board<BASE> &b)
 }
 
 template<int BASE>
-void Sudoku::Board<BASE>::SetValue(Cell cell, uint16_t value)
+void Sudoku::Board<BASE>::SetValueWithoutElimination(Cell cell, uint16_t value)
 {
     solution[cell.RowInd * WIDTH + cell.ColInd] = __builtin_ffs(value);
+}
+
+template<int BASE>
+void Sudoku::Board<BASE>::SetValue(Cell cell, uint16_t value)
+{
+    SetValueWithoutElimination(cell, value);
     Eliminate(cell, value);
 }
 
