@@ -1,36 +1,26 @@
 #pragma once
+#include "Board.h"
+#include <cstring>
+
 namespace Sudoku
 {
-    struct Cell
-    {
-        int Row;
-        int Coll;
-        int Box; 
-    };
-
     // Solver for sudoku BASE^2 X BASE^2 up to BASE^2 == 16
     // The appropriate sudoku values mst follow 0, 1, 2, ..., BASE^2 - 1
     template<int BASE>
     class BacktrackingSolver
     {
-        private:
-            static constexpr int WIDTH = BASE * BASE;
-            static constexpr int CELL_COUNT = WIDTH * WIDTH;
-            static constexpr short NO_CANDIDATES = 65535 >> (sizeof(short) * 8 - WIDTH);
-            short rows[WIDTH];
-            short cols[WIDTH];
-            short boxes[WIDTH];
-            Cell emptyCells[CELL_COUNT];
-            int emptyCellsCount;
-                    
-            inline short NextCandidate(short availableCandidates);
-            inline int CountCandidates(Sudoku::Cell cell);
-
-            void SortEmptyCells(int offset = 0);
-            void Analyze(const int* puzzle, int* sollution);
-            bool Backtrack(int* puzzle, int emptyCellIndex);
         public:
-            void Solve(const int* puzzle, int* sollution);
+            BacktrackingSolver(Board<BASE> &board);
+            void Solve();
+   
+        private:
+            Board<BASE> &board;     
+            bool Backtrack(int emptyCellIndex);
+            static inline uint16_t NextCandidate(uint16_t occupants)
+            {
+                return ~occupants & -~occupants;
+            }
+
     };
 
     template class BacktrackingSolver<3>;
