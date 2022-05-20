@@ -33,7 +33,7 @@ void Sudoku::printBoardWithCandidates(const Board<BASE>* board)
 }
 
 template<int BASE>
-void Sudoku::printBoard(const Board<BASE>* board)
+void Sudoku::printPuzzle(const Board<BASE>* board)
 {
     printPuzzle(board->GetSolution(), board->WIDTH);
 }
@@ -53,21 +53,28 @@ void Sudoku::printPuzzle(const int* puzzle, int width)
 }
 
 
-bool Sudoku::assertPuzzles(const int* puzzle1, const int* puzzle2)
+template<int BASE>
+bool Sudoku::assertPuzzles(const Board<BASE> &board, const int* expectedSolution)
+{
+    return assertPuzzles(board.GetSolution(), expectedSolution, board.WIDTH);
+}
+
+
+bool Sudoku::assertPuzzles(const int* puzzle1, const int* puzzle2, int width)
 {
     std::string errorMessage;
     bool isSuccess = true;
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < width; i++)
     {
-        for (int j = 0; j < 16; j++)
+        for (int j = 0; j < width; j++)
         {
-            if (puzzle1[i * 16 + j] == puzzle2[i * 16 + j])
+            if (puzzle1[i * width + j] == puzzle2[i * width + j])
             {
-                errorMessage  += std::to_string(puzzle1[i * 16 + j]) + ", ";
+                errorMessage  += std::to_string(puzzle1[i * width + j]) + ", ";
             }
             else
             {   
-                errorMessage  += std::to_string(puzzle1[i * 16 + j]) + "[" + std::to_string(puzzle2[i * 16 + j]) + "], ";
+                errorMessage  += std::to_string(puzzle1[i * width + j]) + "[" + std::to_string(puzzle2[i * width + j]) + "], ";
                 isSuccess = false;
             }
         }
@@ -90,6 +97,10 @@ template void Sudoku::printBoardWithCandidates<2>(const Board<2>*);
 template void Sudoku::printBoardWithCandidates<3>(const Board<3>*);
 template void Sudoku::printBoardWithCandidates<4>(const Board<4>*);
 
-template void Sudoku::printBoard<2>(const Board<2>*);
-template void Sudoku::printBoard<3>(const Board<3>*);
-template void Sudoku::printBoard<4>(const Board<4>*);
+template void Sudoku::printPuzzle<2>(const Board<2>*);
+template void Sudoku::printPuzzle<3>(const Board<3>*);
+template void Sudoku::printPuzzle<4>(const Board<4>*);
+
+template bool Sudoku::assertPuzzles<2>(const Board<2> &board, const int* expectedSolution);
+template bool Sudoku::assertPuzzles<3>(const Board<3> &board, const int* expectedSolution);
+template bool Sudoku::assertPuzzles<4>(const Board<4> &board, const int* expectedSolution);
