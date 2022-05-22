@@ -35,11 +35,27 @@ Sudoku::Board<BASE>::Board(const int* puzzle, const int emptyValue) : EMPTY_VALU
 template<int BASE>
 Sudoku::Board<BASE>::Board(const Board<BASE> &b) : EMPTY_VALUE(b.EMPTY_VALUE)
 {
-    std::memcpy(solution, b.solution, sizeof(int) * CELL_COUNT);
-    std::memcpy(rowOccupants, b.rowOccupants, sizeof(uint16_t) * WIDTH);
-    std::memcpy(colOccupants, b.colOccupants, sizeof(uint16_t) * WIDTH);
-    std::memcpy(boxOccupants, b.boxOccupants, sizeof(uint16_t) * WIDTH);
-    
+    for (int i = 0; i < WIDTH; i++)
+    {
+        rowOccupants[i] = b.rowOccupants[i];
+        colOccupants[i] = b.colOccupants[i];
+        boxOccupants[i] = b.boxOccupants[i];
+        extraOccupants[i] = b.extraOccupants[i];
+
+        EmptyCells[i] = b.EmptyCells[i];
+        solution[i] = b.solution[i];
+    }
+    EmptyCellsCount =  b.EmptyCellsCount;
+    for (int i = WIDTH; i < EmptyCellsCount; i++)
+    {
+        EmptyCells[i] = b.EmptyCells[i];
+        solution[i] = b.solution[i];
+    }
+
+    for (int i = EmptyCellsCount; i < CELL_COUNT; i++)
+    {
+        solution[i] = b.solution[i];
+    }
 }
 
 template<int BASE>

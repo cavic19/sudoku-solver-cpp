@@ -39,13 +39,27 @@ namespace Sudoku
             const int* GetSolution() const; 
             inline uint16_t GetOccupants(Cell cell) const
             {
-                return rowOccupants[cell.RowInd] | colOccupants[cell.ColInd] | boxOccupants[cell.BoxInd];
+                return rowOccupants[cell.RowInd] | colOccupants[cell.ColInd] | boxOccupants[cell.BoxInd] | extraOccupants[cell.RowInd * WIDTH + cell.ColInd];
             }
             inline void Eliminate(Cell cell, uint16_t value)
             {
                 rowOccupants[cell.RowInd] ^= value;
                 colOccupants[cell.ColInd] ^= value;
                 boxOccupants[cell.BoxInd] ^= value;
+            }
+            static inline uint16_t NextCandidate(uint16_t occupants)
+            {
+                return ~occupants & -~occupants;
+            }
+
+            void SetExtraOccupant(Cell cell, uint16_t occupant)
+            {
+                extraOccupants[cell.RowInd * WIDTH + cell.ColInd] ^= occupant; 
+            }
+
+            inline int CountCandidates(Cell cell)
+            {
+                return WIDTH- __builtin_popcount(GetOccupants(cell));
             }
 
         private:   
@@ -54,6 +68,7 @@ namespace Sudoku
             uint16_t rowOccupants[WIDTH] = {0};
             uint16_t colOccupants[WIDTH] = {0};
             uint16_t boxOccupants[WIDTH] = {0};
+            uint16_t extraOccupants[CELL_COUNT] = {0};
             void Init();
     };
 } // namespace Sudoku

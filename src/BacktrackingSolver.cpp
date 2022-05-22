@@ -8,9 +8,9 @@ Sudoku::BacktrackingSolver<BASE>::BacktrackingSolver(Board<BASE> &board) : board
 }
 
 template<int BASE>
-void Sudoku::BacktrackingSolver<BASE>::Solve()
+bool Sudoku::BacktrackingSolver<BASE>::Solve()
 {
-    Backtrack(board.EmptyCellsCount - 1);
+    return Backtrack(board.EmptyCellsCount - 1);
 }
 
 template<int BASE>
@@ -24,7 +24,7 @@ bool Sudoku::BacktrackingSolver<BASE>::Backtrack(int emptyCellIndex)
 
     while(occupants != board.CELL_COMPLETELY_OCCUPIED)
     {
-        nextCandidate = NextCandidate(occupants);
+        nextCandidate = Board<BASE>::NextCandidate(occupants);
         occupants ^= nextCandidate;
         board.Eliminate(cell, nextCandidate);
 

@@ -11,15 +11,11 @@ namespace Sudoku
     {
         public:
             BacktrackingSolver(Board<BASE> &board);
-            void Solve();
+            bool Solve();
    
         private:
             Board<BASE> &board;     
             bool Backtrack(int emptyCellIndex);
-            static inline uint16_t NextCandidate(uint16_t occupants)
-            {
-                return ~occupants & -~occupants;
-            }
 
     };
 
