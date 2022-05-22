@@ -6,7 +6,7 @@
 #include "BaordGenerator.h"
 #include <string>
 #include <queue>
-
+#include <chrono>
 
 const int BASE = 3;
 const int WIDTH = BASE * BASE;
@@ -25,19 +25,20 @@ int main(int argc, char** argv)
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     MPI_Comm_rank(MPI_COMM_WORLD, &iproc);
-
+    auto start = std::chrono::steady_clock::now();
+    
     Sudoku::Board<BASE> boardOrig(puzzle);
-
     std::queue<Sudoku::Board<BASE>*> queue;
     queue.push(&boardOrig);
     Sudoku::BoardGenerator::Generate(queue, nproc);
 
     for (int i = 0; i < iproc; i++) queue.pop();
-
     Sudoku::BacktrackingSolver<BASE> solver(*queue.front());
     if(solver.Solve())
     {
-        std::cout << "Process " << iproc << " found a solution!" << std::endl;
+        auto end = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
+        std::cout << "Process " << iproc << " found a solution in " << elapsed << "ns" << std::endl;
         Sudoku::assertPuzzles(*queue.front(), actualSolution);
     }
     else
