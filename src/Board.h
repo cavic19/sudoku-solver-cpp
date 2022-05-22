@@ -2,7 +2,7 @@
 #include <vector>
 #include <cstring>
 #include "stdint.h"
-
+#include "C:\Program Files (x86)\Microsoft SDKs\MPI\Include\mpi.h"
 namespace Sudoku
 {
     struct Cell
@@ -20,7 +20,9 @@ namespace Sudoku
             static constexpr int WIDTH = BASE * BASE;
             static constexpr int CELL_COUNT = WIDTH * WIDTH;
             static constexpr uint16_t CELL_COMPLETELY_OCCUPIED = 65535 >> (sizeof(uint16_t) * 8 - WIDTH);
-            
+            static MPI_Datatype MPI_CELL;
+            static MPI_Datatype MPI_BOARD;
+
             // TODO: Implement priority queue or something more efficient
             Cell EmptyCells[CELL_COUNT];
             int EmptyCellsCount = 0;
@@ -66,5 +68,8 @@ namespace Sudoku
             uint16_t boxOccupants[WIDTH] = {0};
             uint16_t extraOccupants[CELL_COUNT] = {0};
             void Init();
+            static MPI_Datatype InitializeMPICellDataType();
+            static MPI_Datatype InitializeMPIBoardDataType();
     };
 } // namespace Sudoku
+
