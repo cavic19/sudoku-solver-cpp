@@ -20,8 +20,8 @@ int main(int argc, char** argv)
 {
     int nproc, iproc;
     InitPuzzles(
-        "8..........36......7..9.2...5...7.......457.....1...3...1....68..85...1..9....4..;812753649943682175675491283154237896369845721287169534521974368438526917796318452", 
-        true);
+        "9..8...........5............2..1...3.1.....6....4...7.7.86.........3.1..4.....2..", 
+        false);
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     MPI_Comm_rank(MPI_COMM_WORLD, &iproc);
@@ -37,9 +37,10 @@ int main(int argc, char** argv)
     if(solver.Solve())
     {
         auto end = std::chrono::steady_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count();
-        std::cout << "Process " << iproc << " found a solution in " << elapsed << "ns" << std::endl;
-        Sudoku::assertPuzzles(*queue.front(), actualSolution);
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
+        std::cout << "Process " << iproc << " found a solution in " << elapsed << "ms" << std::endl;
+        // Sudoku::assertPuzzles(*queue.front(), actualSolution);
+        Sudoku::printPuzzle(queue.front());
     }
     else
     {
