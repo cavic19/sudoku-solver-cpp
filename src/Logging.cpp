@@ -18,17 +18,23 @@ void Sudoku::printBoardWithCandidates(const Board<BASE>* board)
             Sudoku::Cell c = {row, col, box};
             auto occupants = board->GetOccupants(c);
             short candiates = board->CELL_COMPLETELY_OCCUPIED ^ occupants;
-            for (int i = 0; i < board->WIDTH; i++)
-            {
-                if(candiates & (1 << i))
-                {
-                    std::cout << i + 1;
-                }
-            }
+            printCandidates(candiates, board->WIDTH);
             std::cout << ",";
             
         }
         std::cout << std::endl;
+    }
+}
+
+
+void Sudoku::printCandidates(uint16_t candidates, int width)
+{
+    for (int i = 0; i < width; i++)
+    {
+        if(candidates & (1 << i))
+        {
+            std::cout << i + 1;
+        }
     }
 }
 
