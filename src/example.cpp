@@ -3,9 +3,10 @@
 #include "Parser.h"
 #include "Logging.h"
 #include "BacktrackingSolver.h"
+#include "BaordGenerator.h"
 #include <string>
 #include <queue>
-#include <tuple>
+
 
 const int BASE = 3;
 const int WIDTH = BASE * BASE;
@@ -15,7 +16,6 @@ int puzzle[CELL_COUNT];
 int actualSolution[CELL_COUNT];
 
 void InitPuzzles(std::string puzzleLine, bool withSolution);
-void generateBoards(Sudoku::Board<BASE> &bIn, const int n, Sudoku::Board<BASE>** bOut);
 int main(int argc, char** argv)
 {
     int nproc, iproc;
@@ -27,34 +27,24 @@ int main(int argc, char** argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &iproc);
 
     Sudoku::Board<BASE> boardOrig(puzzle);
-    Sudoku::Board<BASE>* boardPool[8];
-    generateBoards(boardOrig, 8, boardPool);
-    for (int i = 0; i < 8; i++)
+
+    std::queue<Sudoku::Board<BASE>*> queue;
+    queue.push(&boardOrig);
+    Sudoku::BoardGenerator::Generate(queue, nproc);
+
+    for (int i = 0; i < iproc; i++) queue.pop();
+
+    Sudoku::BacktrackingSolver<BASE> solver(*queue.front());
+    if(solver.Solve())
     {
-        std::cout << i << std::endl;
-        Sudoku::printBoardWithCandidates(boardPool[i]);
-        std::cout << std::endl << std::endl;
+        std::cout << "Process " << iproc << " found a solution!" << std::endl;
+        Sudoku::assertPuzzles(*queue.front(), actualSolution);
     }
-    
-
-
-
-
-
-
-    // Sudoku::BacktrackingSolver<BASE> solver(*boardPool[iproc]);
-    // if(solver.Solve())
-    // {
-    //     std::cout << "Process " << iproc << " found a solution!" << std::endl;
-    //     Sudoku::assertPuzzles(*boardPool[iproc], actualSolution);
-    // }
-    // else
-    // {
-    //     std::cout << "Process " << iproc << " failed." << std::endl;
-    // }
-
-    //     delete boardPool[iproc];
-    
+    else
+    {
+        std::cout << "Process " << iproc << " failed." << std::endl;
+    }
+  
     MPI_Finalize();
     return 0;
 }
@@ -71,41 +61,5 @@ void InitPuzzles(std::string puzzleLine, bool withSolution = false)
     else
     {
         p.Parse(puzzleLine, puzzle);
-    }
-}
-
-
-
-void generateBoards(Sudoku::Board<BASE> &bIn, const int n, Sudoku::Board<BASE>** bOut)
-{
-    int index = 0;
-    std::queue<Sudoku::Board<BASE>*> queue;
-    queue.push(&bIn);
-
-    while(index < n)
-    {
-        Sudoku::Board<BASE>* b = queue.front();
-        queue.pop();
-        Sudoku::Cell cell = b->EmptyCells[b->EmptyCellsCount - 1];
-        uint16_t occupants = b->GetOccupants(cell);
-        uint16_t candidate = Sudoku::Board<BASE>::NextCandidate(occupants);
-        occupants ^= candidate;
-
-        while(occupants <= b->CELL_COMPLETELY_OCCUPIED)
-        {
-            Sudoku::Board<BASE>* nextBoard = new Sudoku::Board<BASE>(*b);
-            queue.push(nextBoard);
-            bOut[index++] = nextBoard;
-
-            if(index == n)
-            {
-                nextBoard->SetExtraOccupant(cell, occupants ^ candidate);
-                break;
-            }
-            nextBoard->SetValue(cell, candidate);
-            nextBoard->EmptyCellsCount--;
-            candidate = Sudoku::Board<BASE>::NextCandidate(occupants);
-            occupants ^= candidate;
-        }
     }
 }
