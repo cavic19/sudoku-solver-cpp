@@ -10,11 +10,7 @@ namespace Sudoku
         int RowInd;
         int ColInd;
         int BoxInd;
-
-        friend bool operator==(const Cell& cell1, const Cell& cell2);
     };
-
-    bool operator==(const Cell& cell1, const Cell& cell2);
 
 
     template<int BASE>
