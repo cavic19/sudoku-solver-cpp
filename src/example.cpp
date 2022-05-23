@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 {
     int nproc, iproc;
     InitPuzzles(
-        "9..8...........5............2..1...3.1.....6....4...7.7.86.........3.1..4.....2..", 
+        ".....5.8....6.1.43..........1.5........1.6...3.......553.....61........4.........", 
         false);
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
@@ -44,7 +44,9 @@ int main(int argc, char** argv)
     }
     else
     {
-        std::cout << "Process " << iproc << " failed." << std::endl;
+        auto end = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
+        std::cout << "Process " << iproc << " failed after " << elapsed << "ms" << std::endl;
     }
   
     MPI_Finalize();
