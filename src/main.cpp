@@ -4,6 +4,7 @@
 #include "Logging.h"
 #include "BacktrackingSolver.h"
 #include "BaordGenerator.h"
+#include "IndexedQueue.cpp"
 #include <string>
 #include <queue>
 #include <chrono>
@@ -26,21 +27,19 @@ int main(int argc, char** argv)
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
     MPI_Comm_rank(MPI_COMM_WORLD, &iproc);
     auto start = std::chrono::steady_clock::now();
-    
     Sudoku::Board<BASE> boardOrig(puzzle);
-    std::queue<Sudoku::Board<BASE>*> queue;
-    queue.push(&boardOrig);
+    Sudoku::IndexedQueue<Sudoku::Board<BASE>*, 100> queue;
+    queue.Enqueue(&boardOrig);
     Sudoku::BoardGenerator::Generate(queue, nproc);
 
-    for (int i = 0; i < iproc; i++) queue.pop();
-    Sudoku::BacktrackingSolver<BASE> solver(*queue.front());
+    Sudoku::BacktrackingSolver<BASE> solver(*queue[iproc]);
     if(solver.Solve())
     {
         auto end = std::chrono::steady_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds> (end - start).count();
         std::cout << "Process " << iproc << " found a solution in " << elapsed << "ms" << std::endl;
         // Sudoku::assertPuzzles(*queue.front(), actualSolution);
-        Sudoku::printPuzzle(queue.front());
+        Sudoku::printPuzzle(queue[iproc]);
     }
     else
     {

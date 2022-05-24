@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include "Board.h"
+#include "IndexedQueue.h"
 
 namespace Sudoku
 {
@@ -8,18 +9,17 @@ namespace Sudoku
     {
         public:
             template<int BASE>
-            static void Generate(std::queue<Board<BASE>*> &initQueue,  int count);
+            static void Generate(IndexedQueue<Board<BASE>*, 100> &initQueue,  int count);
     };
 } // namespace Sudoku
 
 
 template<int BASE>
-void Sudoku::BoardGenerator::Generate(std::queue<Board<BASE>*> &initQueue,  int count)
+void Sudoku::BoardGenerator::Generate(IndexedQueue<Board<BASE>*, 100> &initQueue,  int count)
 {
-    while(initQueue.size() < count)
+    while(initQueue.Size() < count)
     {
-        Sudoku::Board<BASE>* b = initQueue.front();
-        initQueue.pop();
+        Sudoku::Board<BASE>* b = initQueue.Dequeue();
         Sudoku::Cell cell = b->EmptyCells[b->EmptyCellsCount - 1];
         uint16_t occupants = b->GetOccupants(cell);
         uint16_t candidate = Sudoku::Board<BASE>::NextCandidate(occupants);
@@ -28,8 +28,8 @@ void Sudoku::BoardGenerator::Generate(std::queue<Board<BASE>*> &initQueue,  int 
         while(occupants <= b->CELL_COMPLETELY_OCCUPIED)
         {
             Sudoku::Board<BASE>* nextBoard = new Sudoku::Board<BASE>(*b);
-            initQueue.push(nextBoard);
-            if(initQueue.size() == count)
+            initQueue.Enqueue(nextBoard);
+            if(initQueue.Size() == count)
             {
                 nextBoard->SetExtraOccupant(cell, occupants ^ candidate);
                 break;
