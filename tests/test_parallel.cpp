@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 {
     int nproc, iproc;
     InitPuzzles(
-        ".4..5..67...1...4....2.....1..8..3........2...6...........4..5.3.....8..2........", 
+        "3.6.7...........518.........1.4.5...7.....6.....2......2.....4.....8.3.....5.....", 
         false);
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);

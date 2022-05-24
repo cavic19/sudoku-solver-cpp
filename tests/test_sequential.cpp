@@ -18,7 +18,7 @@ void InitPuzzles(std::string puzzleLine, bool withSolution);
 int main()
 {
     InitPuzzles(
-        ".4..5..67...1...4....2.....1..8..3........2...6...........4..5.3.....8..2........", 
+        "3.6.7...........518.........1.4.5...7.....6.....2......2.....4.....8.3.....5.....", // extra hard puzzle ~11s
         false);
 
     Sudoku::Board<BASE> board(puzzle);
