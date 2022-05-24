@@ -1,17 +1,20 @@
-.\build\Test.exe: .\build\Tests.o .\build\SudokuTests.o .\build\BacktrackingSolver.o .\build\Parser.o
-	g++ .\build\Tests.o .\build\SudokuTests.o .\build\BacktrackingSolver.o .\build\Parser.o -o .\build\Test.exe
+CC=g++
+BUILD_DIR = .\build
+SRC_BUILD_DIR = ..\src\build
+SRC_OBJ = $(SRC_BUILD_DIR)/BacktrackingSolver.o $(SRC_BUILD_DIR)/Board.o $(SRC_BUILD_DIR)/IndexedQueue.o $(SRC_BUILD_DIR)/Parser.o $(SRC_BUILD_DIR)/Logging.o
+MSPI_LIB = "${MSMPI_LIB64}msmpi.lib"
 
-.\build\Tests.o: Tests.cpp
-	g++ -c Tests.cpp -o .\build\Tests.o
+p: $(BUILD_DIR)/test_parallel.o
+	$(CC) $(SRC_OBJ) $(BUILD_DIR)/test_parallel.o $(MSPI_LIB) -o $(BUILD_DIR)/test_parallel.exe
 
-.\build\SudokuTests.o: SudokuTests.cpp SudokuTests.h
-	g++ -c SudokuTests.cpp -o .\build\SudokuTests.o
+$(BUILD_DIR)/test_parallel.o: test_parallel.cpp
+	$(CC) -c test_parallel.cpp -o $(BUILD_DIR)/test_parallel.o 
 
-.\build\BacktrackingSolver.o: ..\src\BacktrackingSolver.cpp ..\src\BacktrackingSolver.h
-	g++ -c ..\src\BacktrackingSolver.cpp -o .\build\BacktrackingSolver.o
+s: $(BUILD_DIR)/test_sequential.o
+	$(CC) $(SRC_OBJ) $(BUILD_DIR)/test_sequential.o -o $(BUILD_DIR)/test_sequential.exe
 
-.\build\Parser.o: ..\src\Parser.cpp ..\src\Parser.h
-	g++ -c ..\src\Parser.cpp -o .\build\Parser.o
+$(BUILD_DIR)/test_sequential.o: test_sequential.cpp
+	$(CC) -c test_sequential.cpp -o $(BUILD_DIR)/test_sequential.o
 
 clean:
-	del .\build\Test.exe .\build\*.o
+	del $(BUILD_DIR)\test_parallel.exe $(BUILD_DIR)\test_sequential.exe $(BUILD_DIR)\*.o

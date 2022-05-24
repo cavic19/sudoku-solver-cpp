@@ -1,13 +1,13 @@
 #include <iostream>
 #include "C:\Program Files (x86)\Microsoft SDKs\MPI\Include\mpi.h"
-#include "Parser.h"
-#include "Logging.h"
-#include "BacktrackingSolver.h"
-#include "BaordGenerator.h"
-#include "IndexedQueue.cpp"
 #include <string>
 #include <queue>
 #include <chrono>
+#include "..\src\Parser.h"
+#include "..\src\Logging.h"
+#include "..\src\BacktrackingSolver.h"
+#include "..\src\BaordGenerator.h"
+#include "..\src\IndexedQueue.cpp"
 
 const int BASE = 3;
 const int WIDTH = BASE * BASE;
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 {
     int nproc, iproc;
     InitPuzzles(
-        ".....5.8....6.1.43..........1.5........1.6...3.......553.....61........4.........", 
+        ".4..5..67...1...4....2.....1..8..3........2...6...........4..5.3.....8..2........", 
         false);
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &nproc);
