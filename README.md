@@ -26,4 +26,4 @@ Pro testováním jsem vybral velmi složité sudoku, kteér sekvenčnímu backtr
 |...|5..|...|
 +---+---+---+
 ```
-Zatámco paralenímu algoritmu to trvalo vyřešit 1.879s. Tedy sekvenční čas běhu je $T_S = 10937ms$ a paralelní čas běhu je $T_P = 1879ms$. Z toho lze vypočíst urychlení $S = \frac{T_S}{T_P} = 5.8$.
+Zatámco paralenímu algoritmu, při 8 procesech, to trvalo vyřešit 1.879s. Tedy sekvenční čas běhu je $T_S = 10937ms$ a paralelní čas běhu je $T_P = 1879ms$. Z toho lze vypočíst urychlení $S = \frac{T_S}{T_P} = 5.8$ a efektivita je tedy $E = \frac{S}{p} = 0.725$.
