@@ -1,33 +1,10 @@
 # Zadání
+Naimplementovat pomocí knihovny MPI paralelní algoritmus pro řešení sudoku (zobecnit na řešení 16x16). 
+ 1. Nejdřív naimplementovat jednoduchý sekvenční algoritmus
+ 2. Ten i za pomocí profileru optimalizovat
+ 3. Porovnat výslekdy sekvenční a paralelní implementace včetně naměření paralelního urychlení a efektivity
 
-Dobry den,
+# Řešení
+Jako sekvenční algoritmus byl zvolen backtracking. Jedná se o brute force agoritmus, kdy procházím všechny možnosti dokud nenaleznu tu správnou. Zároveň jednotlivé větvě stromu jsou nezávislé, tudíž dobře paralelizovatelné. Myšlenka paralelního algoritmu je jendoduchá. Nejdřív provedu hledání do šířky, čímž vyberu p různých počátečních podob sudoku, kde pe je take počet procesů. Posléze paralelně řeším takto nastavené sudoku. 
 
-ano Sudoku je dobra uloha. Aby to nebylo uplne trivialni, tak se asi
-nejlepe hodi implementace pres MPI. Take je dobre si ulohu zobecnit ne
-jen na hry 3x3x3, ale treba 5x5x5. To zakladni Sudoku se vetsinou
-vyresi velice rychle a tezko se na tom pomeruje urychleni.
-
-S pozdravem, Tomas O.
-
-# Nápady
- - Nejdřív sepiš single CPU verzi
-     - V ní nejdřív jen přepiš rekurzivní funkci (no-tail) a tu se pokus optimalizovat. Asi prevedenim na tail jestli půjde
-     - Optimalizuj skrze metody na PAA (for rolling, horizontal memory lines ... atd)
- - Integruj paralelni algoritmus
-     - Simultánní checkování řádku a sloupce 
-
-
-Každý optimalizacni krok otaguj na gitu popřípadě udělej branch aspon pro single a multi?
-https://codegolf.stackexchange.com/questions/190727/the-fastest-sudoku-solver
-TDoku: https://github.com/t-dillon/tdoku/blob/master/src/solver_basic.cc
-
-Resit pomoci bitovych operaci?
-
-## Backtracking
-Lze paralelizovar checkovani sloupcu a radku
-
-## Simulated Annealing
-Lze paralelizvoat subboxy
-
-# TODO
- - Pridat namespace Sudoku a prejmenovat SudokuParser -> Parser, atd.
+V ideálním případě, kdy bych nebyl omezen zadáním, tedy knihovnou MPI, tak se nabízí ještě implementovat tzv. work stealing. Ten by využíval sekvenční algoritmus hledání do hloubky, kde si postupně jendotlivé nody stromu ukládá algoritmus do zásobníku. V paralelním algoritmu pak ve chvílí kdy řešička skončí neúspěchem, tak se podívá k ostatním procesům do tohoto zásobníku a ukradne si třeba polovinu možností a dál pracuje. Tímto se zbavíme neaktivních procesů, které skončili dříve.
